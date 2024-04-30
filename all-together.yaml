@@ -1,0 +1,430 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations: {}
+    
+  name: service.name.8
+  namespace: default
+spec:
+  ports:
+  - name: outline_01
+    port: 3000
+    protocol: tcp
+    targetPort: 3000
+  selector:
+    app: demo.37
+  type: NodePort
+
+
+#This is Deployment Configuration Kube definition
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: demo.37
+  name: deployment.name.76
+  namespace: default
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: demo.37
+  template:
+    metadata:
+      labels:
+        app: demo.37
+      namespace: default
+    spec:
+      containers:
+      - image: docker.getoutline.com/outlinewiki/outline:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+          name: portname.0
+          protocol: tcp
+        volumeMounts:
+        - mountPath: /var/lib/outline/data
+          name: pvo.0
+      terminationGracePeriodSeconds: 0
+      volumes:
+      - name: pvo.0
+        persistentVolumeClaim:
+          claimName: claimname.0
+
+#This is PersistentVolume Kube Object with Name
+#pvo.0.yml
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations: {}
+    
+  name: pvo.0
+  namespace: default
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 10Gi
+  hostPath:
+    path: storage-data
+    type: Directory
+  persistentVolumeReclaimPolicy: Retain
+
+#This is PersistentVolumeClaim Kube Object with Name
+#claimname.0.yml
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations: {}
+    
+  name: claimname.0
+  namespace: default
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: pvo.0
+
+#Generating kubernetes YAML file for the Service redis.yml
+#This is Service Configuration Kube definition
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations: {}
+    
+  name: service.name.6
+  namespace: default
+spec:
+  ports:
+  - name: outline_01
+    port: 6379
+    protocol: tcp
+    targetPort: 6379
+  selector:
+    app: demo.98
+  type: NodePort
+
+
+#This is Deployment Configuration Kube definition
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: demo.98
+  name: deployment.name.75
+  namespace: default
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: demo.98
+  template:
+    metadata:
+      labels:
+        app: demo.98
+      namespace: default
+    spec:
+      containers:
+      - image: redis
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - CMD
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        ports:
+        - containerPort: 6379
+          name: portname.0
+          protocol: tcp
+        volumeMounts:
+        - mountPath: /redis.conf
+          name: pvo.0
+      terminationGracePeriodSeconds: 0
+      volumes:
+      - name: pvo.0
+        persistentVolumeClaim:
+          claimName: claimname.0
+
+#This is PersistentVolume Kube Object with Name
+#pvo.0.yml
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations: {}
+    
+  name: pvo.0
+  namespace: default
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 10Gi
+  hostPath:
+    path: ./redis.conf
+    type: Directory
+  persistentVolumeReclaimPolicy: Retain
+
+#This is PersistentVolumeClaim Kube Object with Name
+#claimname.0.yml
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations: {}
+    
+  name: claimname.0
+  namespace: default
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: pvo.0
+
+#Generating kubernetes YAML file for the Service postgres.yml
+#This is Service Configuration Kube definition
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations: {}
+    
+  name: service.name.8
+  namespace: default
+spec:
+  ports:
+  - name: outline_01
+    port: 5432
+    protocol: tcp
+    targetPort: 5432
+  selector:
+    app: demo.48
+  type: NodePort
+
+
+#This is Deployment Configuration Kube definition
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: demo.48
+  name: deployment.name.88
+  namespace: default
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: demo.48
+  template:
+    metadata:
+      labels:
+        app: demo.48
+      namespace: default
+    spec:
+      containers:
+      - env:
+        - name: POSTGRES_USER
+          value: user
+        - name: POSTGRES_PASSWORD
+          value: pass
+        - name: POSTGRES_DB
+          value: outline
+        image: postgres
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - CMD
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        ports:
+        - containerPort: 5432
+          name: portname.0
+          protocol: tcp
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: pvo.0
+      terminationGracePeriodSeconds: 0
+      volumes:
+      - name: pvo.0
+        persistentVolumeClaim:
+          claimName: claimname.0
+
+#This is PersistentVolume Kube Object with Name
+#pvo.0.yml
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations: {}
+    
+  name: pvo.0
+  namespace: default
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 10Gi
+  hostPath:
+    path: database-data
+    type: Directory
+  persistentVolumeReclaimPolicy: Retain
+
+#This is PersistentVolumeClaim Kube Object with Name
+#claimname.0.yml
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations: {}
+    
+  name: claimname.0
+  namespace: default
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: pvo.0
+
+#Generating kubernetes YAML file for the Service https-portal.yml
+#This is Service Configuration Kube definition
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations: {}
+    
+  name: service.name.2
+  namespace: default
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: tcp
+    targetPort: 80
+  - name: https
+    port: 443
+    protocol: tcp
+    targetPort: 443
+  selector:
+    app: demo.63
+  type: NodePort
+
+
+#This is Deployment Configuration Kube definition
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: demo.63
+  name: deployment.name.87
+  namespace: default
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: demo.63
+  template:
+    metadata:
+      labels:
+        app: demo.63
+      namespace: default
+    spec:
+      containers:
+      - env:
+        - name: DOMAINS
+          value: docs.mycompany.com -> http://outline:3000
+        - name: STAGE
+          value: production
+        - name: WEBSOCKET
+          value: 'true'
+        - name: CLIENT_MAX_BODY_SIZE
+          value: '0'
+        image: steveltn/https-portal
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - CMD
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        ports:
+        - containerPort: 80
+          name: portname.0
+          protocol: tcp
+        - containerPort: 443
+          name: portname.1
+          protocol: tcp
+        volumeMounts:
+        - mountPath: /var/lib/https-portal
+          name: pvo.0
+      terminationGracePeriodSeconds: 0
+      volumes:
+      - name: pvo.0
+        persistentVolumeClaim:
+          claimName: claimname.0
+
+#This is PersistentVolume Kube Object with Name
+#pvo.0.yml
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations: {}
+    
+  name: pvo.0
+  namespace: default
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 10Gi
+  hostPath:
+    path: https-portal-data
+    type: Directory
+  persistentVolumeReclaimPolicy: Retain
+
+#This is PersistentVolumeClaim Kube Object with Name
+#claimname.0.yml
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations: {}
+    
+  name: claimname.0
+  namespace: default
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: pvo.0
